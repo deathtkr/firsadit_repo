@@ -34,14 +34,14 @@ jobs:
       - run:
           name: Build Docker image
           command: |
-            docker build -f hello-world-api/Dockerfile -t $DOCKERHUB_USERNAME/helloworldapp:$CIRCLE_SHA1 hello-world-api
+            docker build -f hello-world-api/Dockerfile -t $DOCKERHUB_USERNAME/helloworldapp:aditest hello-world-api
 
 
       - run:
           name: Push Docker image
           command: |
             echo $DOCKERHUB_PASSWORD | docker login -u $DOCKERHUB_USERNAME --password-stdin
-            docker push $DOCKERHUB_USERNAME/helloworldapp:$CIRCLE_SHA1
+            docker push $DOCKERHUB_USERNAME/helloworldapp:aditest
 
 workflows:
   version: 2
