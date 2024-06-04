@@ -32,8 +32,7 @@ jobs:
       - run:
           name: Build Docker image
           command: |
-            sudo systemctl start docker
-            docker build -f hello-world-api/Dockerfile hello-world-api
+            docker build -f hello-world-api/Dockerfile -t $DOCKERHUB_USERNAME/helloworldapp:$CIRCLE_SHA1 hello-world-api
 
 
       - run:
