@@ -32,7 +32,7 @@ jobs:
       - run:
           name: Build Docker image
           command: |
-            docker build -t $DOCKERHUB_USERNAME/helloworldapp:$CIRCLE_SHA1 -f hello-world-api/Dockerfile firsadit_repo
+            docker build -t $DOCKERHUB_USERNAME/helloworldapp:$CIRCLE_SHA1 -f firsadit_repo hello-world-api/Dockerfile 
 
       - run:
           name: Push Docker image
