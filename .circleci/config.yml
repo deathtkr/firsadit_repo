@@ -8,7 +8,10 @@ jobs:
       - checkout
       - run:
           name: Restore dependencies
+          command: dotnet nuget locals all --clear
           command: dotnet restore
+                   
+
       - run:
           name: Build the application
           command: dotnet build --configuration Release --no-restore
