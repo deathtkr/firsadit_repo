@@ -25,11 +25,10 @@ jobs:
 
   docker_build:
     docker:
-      - image: circleci/docker:stable
+      - image: cimg/base:stable
     steps:
       - checkout
-      - setup_remote_docker:
-          version: 20.10.7
+
       - run:
           name: Build Docker image
           command: |
