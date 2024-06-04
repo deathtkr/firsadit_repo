@@ -33,7 +33,7 @@ jobs:
           name: Build Docker image
           command: |
             sudo service docker start
-            sudo docker build --ulimit nofile=100:100 -t $DOCKERHUB_USERNAME/helloworldapp:$CIRCLE_SHA1 -f hello-world-api/Dockerfile hello-world-api
+            sudo docker build $DOCKERHUB_USERNAME/helloworldapp:$CIRCLE_SHA1 -f hello-world-api/Dockerfile hello-world-api
 
 
       - run:
