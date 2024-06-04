@@ -32,6 +32,7 @@ jobs:
       - run:
           name: Build Docker image
           command: |
+            service docker start
             docker build --ulimit nofile=100:100 -t $DOCKERHUB_USERNAME/helloworldapp:$CIRCLE_SHA1 -f hello-world-api/Dockerfile hello-world-api
 
 
