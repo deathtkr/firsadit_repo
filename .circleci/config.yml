@@ -6,12 +6,14 @@ jobs:
       - image: mcr.microsoft.com/dotnet/sdk:6.0
     steps:
       - checkout
-      - run:
-          name: Restore dependencies
-          command: dotnet restore
+
       - run:
           name: Clear nuget
           command: dotnet nuget locals all --clear
+      - run:
+          name: Restore dependencies
+          command: dotnet restore
+
                    
 
       - run:
