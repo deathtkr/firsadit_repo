@@ -1,53 +1,40 @@
 version: 2.1
 
 jobs:
-  build:
+  terraform_apply:
     docker:
-      - image: mcr.microsoft.com/dotnet/sdk:6.0
+      - image: hashicorp/terraform:1.0.3
     steps:
       - checkout
-
       - run:
-          name: Clear nuget
-          command: dotnet nuget locals all --clear
-      - run:
-          name: Restore dependencies
-          command: dotnet restore
-
-                   
-
-      - run:
-          name: Build the application
-          command: dotnet build --configuration Release --no-restore
-      - run:
-          name: Publish the application
-          command: dotnet publish --configuration Release --output ./publish --no-build
-
-  docker_build:
-    docker:
-      - image: cimg/base:stable
-    steps:
-      - checkout
-      - setup_remote_docker:
-          docker_layer_caching: true
-
-      - run:
-          name: Build Docker image
+          name: Install Azure CLI
           command: |
-            docker build -f hello-world-api/Dockerfile -t $DOCKERHUB_USERNAME/helloworldapp:aditest hello-world-api
-
-
+            apk add --no-cache curl unzip bash
+            curl -sL https://aka.ms/InstallAzureCLIDeb | bash
       - run:
-          name: Push Docker image
+          name: Azure CLI Login
           command: |
-            echo $DOCKERHUB_PASSWORD | docker login -u $DOCKERHUB_USERNAME --password-stdin
-            docker push $DOCKERHUB_USERNAME/helloworldapp:aditest
+            az login --service-principal -u $ARM_CLIENT_ID -p $ARM_CLIENT_SECRET --tenant $ARM_TENANT_ID
+      - run:
+          name: Terraform Init
+          command: |
+            cd terraform
+            terraform init
+      - run:
+          name: Terraform Apply
+          command: |
+            cd terraform
+            terraform apply -auto-approve
+      - run:
+          name: Trigger Build Branch Pipeline
+          command: |
+            curl -u ${CIRCLECI_API_TOKEN}: \
+            -d '{"branch":"main"}' \
+            -X POST https://circleci.com/api/v2/project/github/deathtkr/firsadit_repo/pipeline
 
 workflows:
   version: 2
-  build_and_push:
+  terraform_workflow:
     jobs:
-      - build
-      - docker_build:
-          requires:
-            - build
+      - terraform_apply
+
