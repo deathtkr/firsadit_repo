@@ -30,7 +30,7 @@ jobs:
           command: dotnet build --configuration Release --no-restore
       - run:
           name: Publish the application
-          command: dotnet publish --configuration Release --output ./publish --no-build
+          command: dotnet publish --configuration Release --output ./publish --no-build          
 
   docker_build:
     executor: docker-executor
@@ -53,9 +53,9 @@ jobs:
     steps:
       - checkout
       - run:
-          name: Install unzip
+          name: Install required tools
           command: |
-            apt-get update && apt-get install -y unzip
+            apt-get update && apt-get install -y unzip curl
       - run:
           name: Download SonarScanner
           command: |
@@ -76,9 +76,9 @@ workflows:
   build_and_push:
     jobs:
       - build
-      - docker_build:
-          requires:
-            - sonarcloud_scan
       - sonarcloud_scan:
           requires:
             - build
+      - docker_build:
+          requires:
+            - sonarcloud_scan
