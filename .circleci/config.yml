@@ -31,7 +31,6 @@ jobs:
       - run:
           name: Publish the application
           command: dotnet publish --configuration Release --output ./publish --no-build
-      - sonarcloud/scan
 
   docker_build:
     executor: docker-executor
@@ -76,11 +75,10 @@ workflows:
   version: 2
   build_and_push:
     jobs:
-      - build:
-          context: SonarCloud
+      - build
       - docker_build:
           requires:
-            - build
+            - sonarcloud_scan
       - sonarcloud_scan:
           requires:
             - build
