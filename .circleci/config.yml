@@ -14,8 +14,6 @@ jobs:
           name: Restore dependencies
           command: dotnet restore
 
-                   
-
       - run:
           name: Build the application
           command: dotnet build --configuration Release --no-restore
@@ -36,12 +34,31 @@ jobs:
           command: |
             docker build -f hello-world-api/Dockerfile -t $DOCKERHUB_USERNAME/helloworldapp:aditest hello-world-api
 
-
       - run:
           name: Push Docker image
           command: |
             echo $DOCKERHUB_PASSWORD | docker login -u $DOCKERHUB_USERNAME --password-stdin
             docker push $DOCKERHUB_USERNAME/helloworldapp:aditest
+
+  sonarcloud_scan:
+    docker:
+      - image: circleci/openjdk:11-jdk  # Choose an appropriate Docker image for SonarScanner
+    steps:
+      - checkout
+      - run:
+          name: Download SonarScanner
+          command: |
+            curl -sSLo sonar-scanner-cli.zip https://binaries.sonarsource.com/Distribution/sonar-scanner-cli/sonar-scanner-cli-4.6.2.2472-linux.zip
+            unzip sonar-scanner-cli.zip
+            mv sonar-scanner-4.6.2.2472-linux sonar-scanner
+      - run:
+          name: Run SonarCloud Scan
+          command: |
+            ./sonar-scanner/bin/sonar-scanner \
+              -Dsonar.projectKey=deathtkr_firsadit_repo \
+              -Dsonar.organization=deathtkr \
+              -Dsonar.host.url=https://sonarcloud.io \
+              -Dsonar.login=$SONAR_TOKEN
 
 workflows:
   version: 2
@@ -49,5 +66,8 @@ workflows:
     jobs:
       - build
       - docker_build:
+          requires:
+            - build
+      - sonarcloud_scan:
           requires:
             - build
