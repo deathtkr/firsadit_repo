@@ -12,7 +12,7 @@ executors:
       - image: cimg/base:stable
   sonar-executor:
     docker:
-      - image: openjdk:17-slim  # Use Java 17 for SonarScanner
+      - image: openjdk:11-jdk-slim
 
 jobs:
   build:
@@ -32,22 +32,6 @@ jobs:
           name: Publish the application
           command: dotnet publish --configuration Release --output ./publish --no-build
 
-  docker_build:
-    executor: docker-executor
-    steps:
-      - checkout
-      - setup_remote_docker:
-          docker_layer_caching: true
-      - run:
-          name: Build Docker image
-          command: |
-            docker build -f hello-world-api/Dockerfile -t $DOCKERHUB_USERNAME/helloworldapp:aditest hello-world-api
-      - run:
-          name: Push Docker image
-          command: |
-            echo $DOCKERHUB_PASSWORD | docker login -u $DOCKERHUB_USERNAME --password-stdin
-            docker push $DOCKERHUB_USERNAME/helloworldapp:aditest
-
   sonarcloud_scan:
     executor: sonar-executor
     steps:
@@ -63,9 +47,6 @@ jobs:
             unzip sonar-scanner-cli.zip
             mv sonar-scanner-4.6.2.2472-linux sonar-scanner
       - run:
-          name: Set JAVA_HOME
-          command: export JAVA_HOME=/usr/lib/jvm/java-17-openjdk-amd64
-      - run:
           name: Run SonarCloud Scan
           command: |
             ./sonar-scanner/bin/sonar-scanner \
@@ -76,12 +57,9 @@ jobs:
 
 workflows:
   version: 2
-  build_and_push:
+  build_and_scan:
     jobs:
       - build
       - sonarcloud_scan:
           requires:
             - build
-      - docker_build:
-          requires:
-            - sonarcloud_scan
