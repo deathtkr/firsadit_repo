@@ -30,7 +30,7 @@ jobs:
           command: dotnet build --configuration Release --no-restore
       - run:
           name: Publish the application
-          command: dotnet publish --configuration Release --output ./publish --no-build          
+          command: dotnet publish --configuration Release --output ./publish --no-build
 
   docker_build:
     executor: docker-executor
@@ -62,26 +62,4 @@ jobs:
             curl -sSLo sonar-scanner-cli.zip https://binaries.sonarsource.com/Distribution/sonar-scanner-cli/sonar-scanner-cli-4.6.2.2472-linux.zip
             unzip sonar-scanner-cli.zip
             mv sonar-scanner-4.6.2.2472-linux sonar-scanner
-      - run:
-          name: Set JAVA_HOME
-          command: export JAVA_HOME=/usr/lib/jvm/java-17-openjdk-amd64
-      - run:
-          name: Run SonarCloud Scan
-          command: |
-            ./sonar-scanner/bin/sonar-scanner \
-              -Dsonar.projectKey=my-org_my-project \
-              -Dsonar.organization=my-org \
-              -Dsonar.host.url=https://sonarcloud.io \
-              -Dsonar.login=$SONAR_TOKEN
-
-workflows:
-  version: 2
-  build_and_push:
-    jobs:
-      - build
-      - sonarcloud_scan:
-          requires:
-            - build
-      - docker_build:
-          requires:
-            - sonarcloud_scan
+      - run
