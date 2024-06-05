@@ -42,7 +42,7 @@ jobs:
 
   sonarcloud_scan:
     docker:
-      - image: circleci/openjdk  # Choose an appropriate Docker image for SonarScanner
+      - image: circleci/openjdk:17-slim  # Choose an appropriate Docker image for SonarScanner
     steps:
       - checkout
       - run:
