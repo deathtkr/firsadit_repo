@@ -1,19 +1,30 @@
 version: 2.1
 
-jobs:
-  build:
+orbs:
+  sonarcloud: sonarsource/sonarcloud@2.0.0
+
+executors:
+  dotnet-executor:
     docker:
       - image: mcr.microsoft.com/dotnet/sdk:6.0
+  docker-executor:
+    docker:
+      - image: cimg/base:stable
+  sonar-executor:
+    docker:
+      - image: openjdk:17-slim  # Use Java 17 for SonarScanner
+
+jobs:
+  build:
+    executor: dotnet-executor
     steps:
       - checkout
-
       - run:
           name: Clear nuget
           command: dotnet nuget locals all --clear
       - run:
           name: Restore dependencies
           command: dotnet restore
-
       - run:
           name: Build the application
           command: dotnet build --configuration Release --no-restore
@@ -23,25 +34,43 @@ jobs:
       - sonarcloud/scan
 
   docker_build:
-    docker:
-      - image: cimg/base:stable
+    executor: docker-executor
     steps:
       - checkout
       - setup_remote_docker:
           docker_layer_caching: true
-
       - run:
           name: Build Docker image
           command: |
             docker build -f hello-world-api/Dockerfile -t $DOCKERHUB_USERNAME/helloworldapp:aditest hello-world-api
-
       - run:
           name: Push Docker image
           command: |
             echo $DOCKERHUB_PASSWORD | docker login -u $DOCKERHUB_USERNAME --password-stdin
             docker push $DOCKERHUB_USERNAME/helloworldapp:aditest
-orbs:
-  sonarcloud: sonarsource/sonarcloud@2.0.0
+
+  sonarcloud_scan:
+    executor: sonar-executor
+    steps:
+      - checkout
+      - run:
+          name: Install unzip
+          command: |
+            apt-get update && apt-get install -y unzip
+      - run:
+          name: Download SonarScanner
+          command: |
+            curl -sSLo sonar-scanner-cli.zip https://binaries.sonarsource.com/Distribution/sonar-scanner-cli/sonar-scanner-cli-4.6.2.2472-linux.zip
+            unzip sonar-scanner-cli.zip
+            mv sonar-scanner-4.6.2.2472-linux sonar-scanner
+      - run:
+          name: Run SonarCloud Scan
+          command: |
+            ./sonar-scanner/bin/sonar-scanner \
+              -Dsonar.projectKey=my-org_my-project \
+              -Dsonar.organization=my-org \
+              -Dsonar.host.url=https://sonarcloud.io \
+              -Dsonar.login=$SONAR_TOKEN
 
 workflows:
   version: 2
@@ -50,5 +79,8 @@ workflows:
       - build:
           context: SonarCloud
       - docker_build:
+          requires:
+            - build
+      - sonarcloud_scan:
           requires:
             - build
