@@ -49,6 +49,7 @@ jobs:
       - run:
           name: Run SonarCloud Scan
           command: |
+            export PATH="$PATH:/path/to/your/java/bin"  # Add Java to PATH
             ./sonar-scanner/bin/sonar-scanner \
               -Dsonar.projectKey=my-org_my-project \
               -Dsonar.organization=my-org \
