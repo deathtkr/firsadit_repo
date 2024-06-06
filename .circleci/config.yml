@@ -12,9 +12,9 @@ jobs:
           name: Install Terraform
           command: |
             curl -LO https://releases.hashicorp.com/terraform/${TF_VERSION}/terraform_${TF_VERSION}_linux_amd64.zip
-            unzip -o terraform_${TF_VERSION}_linux_amd64.zip
-            chmod +x terraform
-            sudo mv terraform /usr/local/bin/
+            unzip -o terraform_${TF_VERSION}_linux_amd64.zip -d /tmp
+            chmod +x /tmp/terraform
+            sudo mv /tmp/terraform /usr/local/bin/
             terraform --version
       - run:
           name: Azure CLI Login
