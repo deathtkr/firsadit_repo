@@ -62,10 +62,10 @@ jobs:
           name: Run SonarCloud Scan
           command: |
             ./sonar-scanner/bin/sonar-scanner \
-              -Dsonar.projectKey=deathtkr_firsadit_repo \
-              -Dsonar.organization=deathtkr \
+              -Dsonar.projectKey=$projectKey \
+              -Dsonar.organization=$organization \
               -Dsonar.host.url=https://sonarcloud.io \
-              -Dsonar.login=4107442bbd6e08c5e3cce088cfae7ecb2b3b2502
+              -Dsonar.login=$Sonar_Token
 
 workflows:
   version: 2
