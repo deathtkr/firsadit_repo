@@ -14,6 +14,7 @@ jobs:
           name: Install Azure CLI
           command: |
             curl -sL https://aka.ms/InstallAzureCLIDeb | bash
+            az --version  # Check Azure CLI version after installation
       - run:
           name: Azure CLI Login
           command: |
