@@ -51,7 +51,7 @@ workflows:
   build_and_push:
     jobs:
       - build:
-          context:SonarCloud
+          context: SonarCloud
       - docker_build:
           requires:
             - build
