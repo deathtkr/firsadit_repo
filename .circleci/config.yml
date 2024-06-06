@@ -1,23 +1,20 @@
 version: 2.1
 
-orbs:
-  terraform: circleci/terraform@3.1
-  azure-cli: circleci/azure-cli@1.2.2
-
 jobs:
   deploy_infrastructure:
-    executor:
-      name: azure-cli/azure-docker
+    docker:
+      - image: circleci/azure-cli:1.2.2
+        environment:
+          TF_VERSION: "1.0.3"  # Specify the Terraform version you want to use
     steps:
       - checkout
-      - azure-cli/install
       - run:
           name: Install Terraform
           command: |
-            curl -LO https://releases.hashicorp.com/terraform/1.0.3/terraform_1.0.3_linux_amd64.zip
-            unzip terraform_1.0.3_linux_amd64.zip
+            curl -LO https://releases.hashicorp.com/terraform/${TF_VERSION}/terraform_${TF_VERSION}_linux_amd64.zip
+            unzip terraform_${TF_VERSION}_linux_amd64.zip
             chmod +x terraform
-            mv terraform /usr/local/bin/
+            sudo mv terraform /usr/local/bin/
             terraform --version
       - run:
           name: Azure CLI Login
@@ -30,7 +27,7 @@ jobs:
           command: terraform plan
       - run:
           name: Terraform Apply
-          command: terraform apply
+          command: terraform apply -auto-approve
 
 workflows:
   version: 2
