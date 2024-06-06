@@ -51,11 +51,7 @@ jobs:
   sonarcloud_scan:
     executor: sonar-executor
     steps:
-      - checkout
-      - run:
-          name: Install required tools
-          command: |
-            curl apt-get update && apt-get install -y unzip 
+      - checkout 
       - run:
           name: Download SonarScanner
           command: |
