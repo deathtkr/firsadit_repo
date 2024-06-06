@@ -31,7 +31,10 @@ jobs:
       - run:
           name: Install unzip
           command: apt-get update && apt-get install -y unzip 
-      - sonarcloud/scan        
+      - sonarcloud/scan:
+          java-version: 11
+          
+                    
 
   docker_build:
     executor: docker-executor
