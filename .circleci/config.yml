@@ -30,9 +30,15 @@ jobs:
           command: dotnet publish --configuration Release --output ./publish --no-build 
       - run:
           name: Install unzip
-          command: apt-get update && apt-get install -y unzip 
-      - sonarcloud/scan:
-          java-version: 11
+          command: apt-get update && apt-get install -y unzip
+      - run:
+          name: Set Java version
+          command: echo "export JAVA_HOME=/usr/lib/jvm/java-11-openjdk-amd64" >> $BASH_ENV
+      - run:
+          name: Source Bash environment
+          command: source $BASH_ENV
+ 
+      - sonarcloud/scan
           
                     
 
