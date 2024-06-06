@@ -3,7 +3,7 @@ version: 2.1
 jobs:
   terraform_apply:
     docker:
-      - image: hashicorp/terraform:1.0.3
+      - image: docker.mirror.hashicorp.services/hashicorp/terraform:light
     steps:
       - checkout
       - run:
