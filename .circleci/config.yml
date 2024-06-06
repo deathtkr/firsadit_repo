@@ -1,14 +1,6 @@
 version: 2.1
 orbs:
   azure-cli: circleci/azure-cli@1.2.2
-jobs:
-  verify-install:
-    executor: azure-cli/default
-    steps:
-      - azure-cli/install
-      - run:
-          command: az -v
-          name: Verify Azure CLI is installed
 
 jobs:
   terraform_apply:
@@ -30,10 +22,20 @@ jobs:
           command: |
             cd terraform
             terraform apply -auto-approve
+  verify-install:
+    executor: azure-cli/default
+    steps:
+      - azure-cli/install
+      - run:
+          command: az -v
+          name: Verify Azure CLI is installed
 
 
 workflows:
   version: 2
   terraform_workflow:
     jobs:
-      - terraform_apply
+      - verify-install
+      - terraform_apply:
+            requires:
+              - verify-install
