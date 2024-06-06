@@ -52,10 +52,7 @@ jobs:
     executor: sonar-executor
     steps:
       - checkout
-      - sonarcloud/scan:
-          project-key: $SONAR_PROJECT_KEY
-          organization: $SONAR_ORGANIZATION
-          token-variable: SONAR_TOKEN
+      - sonarcloud/scan
 
 workflows:
   version: 2
