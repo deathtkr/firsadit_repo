@@ -1,42 +1,29 @@
 version: 2.1
 
+orbs:
+  terraform: circleci/terraform@3.1
+  azure-cli: circleci/azure-cli@1.0.0
+
 jobs:
-  terraform_apply:
-    docker:
-      - image: hashicorp/terraform:1.0.3
+  deploy_infrastructure:
+    executor:
+      name: terraform/default
     steps:
       - checkout
-      - run:
-          name: Install curl and bash
-          command: |
-            apk update && apk add curl curl-dev bash
-      - run:
-          name: Install Azure CLI
-          command: |
-            curl -sL https://aka.ms/InstallAzureCLIDeb | bash
-            az --version  # Check Azure CLI version after installation
+      - terraform/init
+      - azure-cli/install
       - run:
           name: Azure CLI Login
-          command: |
-            az login --service-principal -u $ARM_CLIENT_ID -p $ARM_CLIENT_SECRET --tenant $ARM_TENANT_ID
-      - run:
-          name: Terraform Init
-          command: |
-            cd terraform
-            terraform init
+          command: az login --service-principal -u $ARM_CLIENT_ID -p $ARM_CLIENT_SECRET --tenant $ARM_TENANT_ID
       - run:
           name: Terraform Plan
-          command: |
-            cd terraform
-            terraform plan
+          command: terraform/plan
       - run:
           name: Terraform Apply
-          command: |
-            cd terraform
-            terraform apply -auto-approve
+          command: terraform/apply
 
 workflows:
   version: 2
-  terraform_workflow:
+  deploy_workflow:
     jobs:
-      - terraform_apply
+      - deploy_infrastructure
