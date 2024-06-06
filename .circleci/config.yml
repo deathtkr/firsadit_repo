@@ -1,15 +1,28 @@
-version: '2.1'
+			version: 2.1
 orbs:
+  terraform: circleci/terraform@3.1
   azure-cli: circleci/azure-cli@1.2.2
+
 jobs:
-  verify-install:
-    executor: azure-cli/azure-docker
+  deploy_infrastructure:
+    executor:
+      name: azure-cli/azure-docker
     steps:
+      - checkout
+      - terraform/init
       - azure-cli/install
       - run:
-          command: az -v
-          name: Verify Azure CLI is installed
+          name: Azure CLI Login
+          command: az login --service-principal -u $ARM_CLIENT_ID -p $ARM_CLIENT_SECRET --tenant $ARM_TENANT_ID
+      - run:
+          name: Terraform Plan
+          command: terraform/plan
+      - run:
+          name: Terraform Apply
+          command: terraform/apply
+
 workflows:
-  example-workflow:
+  version: 2
+  deploy_workflow:
     jobs:
-      - verify-install
+      - deploy_infrastructure
