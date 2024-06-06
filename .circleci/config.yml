@@ -65,7 +65,7 @@ jobs:
               -Dsonar.projectKey=deathtkr_firsadit_repo \
               -Dsonar.organization=deathtkr \
               -Dsonar.host.url=https://sonarcloud.io \
-              -Dsonar.login=$SONAR_TOKEN
+              -Dsonar.login=4107442bbd6e08c5e3cce088cfae7ecb2b3b2502
 
 workflows:
   version: 2
