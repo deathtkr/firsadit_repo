@@ -1,7 +1,7 @@
 version: 2.1
 
 orbs:
-  sonarcloud: sonarsource/sonarcloud@1.1.0
+  sonarcloud: sonarsource/sonarcloud@2.0.0
 
 executors:
   dotnet-executor:
@@ -10,6 +10,9 @@ executors:
   docker-executor:
     docker:
       - image: cimg/base:stable
+  sonar-executor:
+    docker:
+      - image: cimg/openjdk:17.0.11  # Use Java 21 for SonarScanner
 
 jobs:
   build:
@@ -27,20 +30,7 @@ jobs:
           command: dotnet build --configuration Release --no-restore
       - run:
           name: Publish the application
-          command: dotnet publish --configuration Release --output ./publish --no-build 
-      - run:
-          name: Install unzip
-          command: apt-get update && apt-get install -y unzip
-      - run:
-          name: Set Java version
-          command: echo "export JAVA_HOME=/usr/lib/jvm/java-11-openjdk-amd64" >> $BASH_ENV
-      - run:
-          name: Source Bash environment
-          command: source $BASH_ENV
- 
-      - sonarcloud/scan
-          
-                    
+          command: dotnet publish --configuration Release --output ./publish --no-build          
 
   docker_build:
     executor: docker-executor
@@ -58,17 +48,33 @@ jobs:
             echo $DOCKERHUB_PASSWORD | docker login -u $DOCKERHUB_USERNAME --password-stdin
             docker push $DOCKERHUB_USERNAME/helloworldapp:aditest
 
-
-
-
+  sonarcloud_scan:
+    executor: sonar-executor
+    steps:
+      - checkout 
+      - run:
+          name: Download SonarScanner
+          command: |
+            curl -sSLo sonar-scanner-cli.zip https://binaries.sonarsource.com/Distribution/sonar-scanner-cli/sonar-scanner-cli-5.0.0.2966-linux.zip
+            unzip sonar-scanner-cli.zip
+            mv sonar-scanner-5.0.0.2966-linux sonar-scanner
+      - run:
+          name: Run SonarCloud Scan
+          command: |
+            ./sonar-scanner/bin/sonar-scanner \
+              -Dsonar.projectKey=deathtkr_firsadit_repo \
+              -Dsonar.organization=deathtkr \
+              -Dsonar.host.url=https://sonarcloud.io \
+              -Dsonar.login=$SONAR_TOKEN
 
 workflows:
   version: 2
   build_and_push:
     jobs:
-      - build:
-          context: SonarCloud
+      - build
       - docker_build:
           requires:
+            - sonarcloud_scan
+      - sonarcloud_scan:
+          requires:
             - build
-
