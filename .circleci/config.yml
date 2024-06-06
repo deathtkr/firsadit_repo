@@ -1,25 +1,17 @@
 version: 2.1
 
+orbs:
+  azure-cli: circleci/azure-cli@1.2.2
+  terraform: circleci/terraform@3.1
+
 jobs:
   deploy_infrastructure:
     docker:
       - image: cimg/openjdk:17.0.11-browsers
-        environment:
-          TF_VERSION: "1.0.3"  # Specify the Terraform version you want to use
     steps:
       - checkout
-      - run:
-          name: Install Azure CLI
-          command: |
-            curl -sL https://aka.ms/InstallAzureCLIDeb | sudo bash
-      - run:
-          name: Install Terraform
-          command: |
-            curl -LO https://releases.hashicorp.com/terraform/${TF_VERSION}/terraform_${TF_VERSION}_linux_amd64.zip
-            unzip -o terraform_${TF_VERSION}_linux_amd64.zip -d /tmp
-            chmod +x /tmp/terraform
-            sudo mv /tmp/terraform /usr/local/bin/
-            terraform --version
+      - azure-cli/install
+      - terraform/install
       - run:
           name: Azure CLI Login
           command: az login --service-principal -u $ARM_CLIENT_ID -p $ARM_CLIENT_SECRET --tenant $ARM_TENANT_ID
