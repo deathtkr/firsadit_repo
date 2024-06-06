@@ -1,13 +1,15 @@
 version: 2.1
-orbs:
-  azure-cli: circleci/azure-cli@1.2.2
 
 jobs:
   terraform_apply:
     docker:
-      - image: docker.mirror.hashicorp.services/hashicorp/terraform:light
+      - image: hashicorp/terraform:1.0.3
     steps:
       - checkout
+      - run:
+          name: Install Azure CLI
+          command: |
+            curl -sL https://aka.ms/InstallAzureCLIDeb | bash
       - run:
           name: Azure CLI Login
           command: |
@@ -18,24 +20,18 @@ jobs:
             cd terraform
             terraform init
       - run:
+          name: Terraform Plan
+          command: |
+            cd terraform
+            terraform plan
+      - run:
           name: Terraform Apply
           command: |
             cd terraform
             terraform apply -auto-approve
-  verify-install:
-    executor: azure-cli/default
-    steps:
-      - azure-cli/install
-      - run:
-          command: az -v
-          name: Verify Azure CLI is installed
-
 
 workflows:
   version: 2
   terraform_workflow:
     jobs:
-      - verify-install
-      - terraform_apply:
-            requires:
-              - verify-install
+      - terraform_apply
