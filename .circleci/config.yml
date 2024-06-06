@@ -10,17 +10,27 @@ jobs:
       name: azure-cli/azure-docker
     steps:
       - checkout
-      - terraform/init
       - azure-cli/install
+      - run:
+          name: Install Terraform
+          command: |
+            curl -LO https://releases.hashicorp.com/terraform/1.0.3/terraform_1.0.3_linux_amd64.zip
+            unzip terraform_1.0.3_linux_amd64.zip
+            chmod +x terraform
+            mv terraform /usr/local/bin/
+            terraform --version
       - run:
           name: Azure CLI Login
           command: az login --service-principal -u $ARM_CLIENT_ID -p $ARM_CLIENT_SECRET --tenant $ARM_TENANT_ID
       - run:
+          name: Terraform Init
+          command: terraform init
+      - run:
           name: Terraform Plan
-          command: terraform/plan
+          command: terraform plan
       - run:
           name: Terraform Apply
-          command: terraform/apply
+          command: terraform apply
 
 workflows:
   version: 2
