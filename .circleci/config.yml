@@ -12,7 +12,7 @@ executors:
       - image: cimg/base:stable
   sonar-executor:
     docker:
-      - image: cimg/openjdk:21.0.2
+      - image: cimg/openjdk:21.0.2  # Use Java 17 for SonarScanner
 
 jobs:
   build:
@@ -30,16 +30,32 @@ jobs:
           command: dotnet build --configuration Release --no-restore
       - run:
           name: Publish the application
-          command: dotnet publish --configuration Release --output ./publish --no-build
+          command: dotnet publish --configuration Release --output ./publish --no-build          
+
+  docker_build:
+    executor: docker-executor
+    steps:
+      - checkout
+      - setup_remote_docker:
+          docker_layer_caching: true
+      - run:
+          name: Build Docker image
+          command: |
+            docker build -f hello-world-api/Dockerfile -t $DOCKERHUB_USERNAME/helloworldapp:aditest hello-world-api
+      - run:
+          name: Push Docker image
+          command: |
+            echo $DOCKERHUB_PASSWORD | docker login -u $DOCKERHUB_USERNAME --password-stdin
+            docker push $DOCKERHUB_USERNAME/helloworldapp:aditest
 
   sonarcloud_scan:
     executor: sonar-executor
     steps:
       - checkout
       - run:
-          name: Install required tools
+          name: Install unzip
           command: |
-            apt-get update && apt-get install -y unzip curl
+            apt-get update && apt-get install -y unzip
       - run:
           name: Download SonarScanner
           command: |
@@ -49,7 +65,6 @@ jobs:
       - run:
           name: Run SonarCloud Scan
           command: |
-            export PATH="$PATH:/path/to/your/java/bin"  # Add Java to PATH
             ./sonar-scanner/bin/sonar-scanner \
               -Dsonar.projectKey=my-org_my-project \
               -Dsonar.organization=my-org \
@@ -58,9 +73,12 @@ jobs:
 
 workflows:
   version: 2
-  build_and_scan:
+  build_and_push:
     jobs:
       - build
+      - docker_build:
+          requires:
+            - sonarcloud_scan
       - sonarcloud_scan:
           requires:
             - build
