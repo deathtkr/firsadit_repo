@@ -12,7 +12,7 @@ executors:
       - image: cimg/base:stable
   sonar-executor:
     docker:
-      - image: cimg/openjdk:17.0.11-browsers  # Use Java 21 for SonarScanne
+      - image: cimg/openjdk:17.0.11-browsers  # Use Java 17 for SonarScanner
 
 jobs:
   build:
@@ -30,7 +30,7 @@ jobs:
           command: dotnet build --configuration Release --no-restore
       - run:
           name: Publish the application
-          command: dotnet publish --configuration Release --output ./publish --no-build          
+          command: dotnet publish --configuration Release --output ./publish --no-build
 
   docker_build:
     executor: docker-executor
@@ -51,30 +51,20 @@ jobs:
   sonarcloud_scan:
     executor: sonar-executor
     steps:
-      - checkout 
-      - run:
-          name: Download SonarScanner
-          command: |
-            curl -sSLo sonar-scanner-cli.zip https://binaries.sonarsource.com/Distribution/sonar-scanner-cli/sonar-scanner-cli-5.0.0.2966-linux.zip
-            unzip sonar-scanner-cli.zip
-            mv sonar-scanner-5.0.0.2966-linux sonar-scanner
-      - run:
-          name: Run SonarCloud Scan
-          command: |
-            ./sonar-scanner/bin/sonar-scanner \
-              -Dsonar.projectKey=$projectKey \
-              -Dsonar.organization=$organization \
-              -Dsonar.host.url=https://sonarcloud.io \
-              -Dsonar.login=$Sonar_Token
+      - checkout
+      - sonarcloud/scan:
+          project-key: $SONAR_PROJECT_KEY
+          organization: $SONAR_ORGANIZATION
+          token-variable: SONAR_TOKEN
 
 workflows:
   version: 2
   build_and_push:
     jobs:
       - build
-      - docker_build:
-          requires:
-            - sonarcloud_scan
       - sonarcloud_scan:
           requires:
             - build
+      - docker_build:
+          requires:
+            - sonarcloud_scan
