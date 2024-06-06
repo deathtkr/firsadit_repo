@@ -12,7 +12,7 @@ executors:
       - image: cimg/base:stable
   sonar-executor:
     docker:
-      - image: cimg/openjdk:21.0.2  # Use Java 17 for SonarScanner
+      - image: cimg/openjdk:21.0.2  # Use Java 21 for SonarScanner
 
 jobs:
   build:
@@ -53,9 +53,9 @@ jobs:
     steps:
       - checkout
       - run:
-          name: Install unzip
+          name: Install required tools
           command: |
-            apt-get update && apt-get install -y unzip
+            apt-get update && apt-get install -y unzip curl
       - run:
           name: Download SonarScanner
           command: |
