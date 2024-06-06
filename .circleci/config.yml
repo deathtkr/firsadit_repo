@@ -12,7 +12,7 @@ executors:
       - image: cimg/base:stable
   sonar-executor:
     docker:
-      - image: openjdk:11-jdk-slim
+      - image: cimg/openjdk:21.0.2
 
 jobs:
   build:
