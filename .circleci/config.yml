@@ -1,6 +1,6 @@
 version: '2.1'
 orbs:
-  azure-cli: circleci/azure-cli@1.2.2
+  azure-cli: azure-cli/azure-docker
 jobs:
   verify-install:
     executor: azure-cli/default
