@@ -1,5 +1,5 @@
 version: 2.1
-#orbs
+#orbs define
 orbs:
   azure-cli: circleci/azure-cli@1.2.2
   terraform: circleci/terraform@3.1
