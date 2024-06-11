@@ -19,20 +19,14 @@ jobs:
           name: Azure CLI Login
           command: az login --service-principal -u $ARM_CLIENT_ID -p $ARM_CLIENT_SECRET --tenant $ARM_TENANT_ID
       - run:
-          name: Change to Terraform Directory
-          command: cd terraform
-      - run:
-          name: List files in Terraform Directory
-          command: ls -la
-      - run:
           name: Terraform Init
-          command: terraform init
+          command: cd terraform && terraform init
       - run:
           name: Terraform Plan
-          command: terraform plan
+          command: cd terraform && terraform plan
       - run:
           name: Terraform Apply
-          command: terraform apply -auto-approve
+          command: cd terraform && terraform apply -auto-approve
 
 workflows:
   version: 2
