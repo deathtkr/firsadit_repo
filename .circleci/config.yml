@@ -24,10 +24,14 @@ jobs:
       - kubernetes/install-kubectl
       - run:
           name: Apply Kubernetes Deployment
-          command: kubectl apply -f kubernetes/deployment.yaml
+          command: |
+            cd kubernetes
+            kubectl apply -f kubernetes/deployment.yaml
       - run:
           name: Apply Kubernetes Deployment
-          command: kubectl apply -f kubernetes/service.yaml
+          command: |
+            cd kubernetes
+            kubectl apply -f kubernetes/service.yaml
 
 workflows:
   version: 2
