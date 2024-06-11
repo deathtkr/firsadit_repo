@@ -1,48 +1,39 @@
 version: 2.1
-# Orbs define
+
 orbs:
   azure-cli: circleci/azure-cli@1.2.2
-  terraform: circleci/terraform@3.1
+  kubernetes: circleci/kubernetes@0.11.0
 
 jobs:
-  deploy_infrastructure:
+  deploy_k8s:
     docker:
       - image: cimg/openjdk:17.0.11-browsers
     steps:
       - checkout
       - azure-cli/install
-      - terraform/install
       - run:
           name: List files for debugging
           command: ls -la
       - run:
-          name: Print Environment Variables
-          command: |
-            echo "ARM_SUBSCRIPTION_ID: $ARM_SUBSCRIPTION_ID"
-            echo "ARM_CLIENT_ID: $ARM_CLIENT_ID"
-            echo "ARM_CLIENT_SECRET: $ARM_CLIENT_SECRET"
-            echo "ARM_TENANT_ID: $ARM_TENANT_ID"
-      - run:
           name: Azure CLI Login
           command: az login --service-principal -u $ARM_CLIENT_ID -p $ARM_CLIENT_SECRET --tenant $ARM_TENANT_ID
       - run:
-          name: Terraform Init
+          name: Get AKS Credentials
           command: |
-            cd terraform
-            terraform init
+            az aks get-credentials --resource-group $RESOURCE_GROUP_NAME --name $CLUSTER_NAME
+      - kubernetes/install-kubectl
       - run:
-          name: Terraform Plan
-          command: |
-            cd terraform
-            terraform plan -var="subscription_id=${ARM_SUBSCRIPTION_ID}" -var="client_id=${ARM_CLIENT_ID}" -var="client_secret=${ARM_CLIENT_SECRET}" -var="tenant_id=${ARM_TENANT_ID}"
+          name: Apply Kubernetes Deployment
+          command: kubectl apply -f ./deployment.yaml
       - run:
-          name: Terraform Apply
-          command: |
-            cd terraform
-            terraform apply -var="subscription_id=${ARM_SUBSCRIPTION_ID}" -var="client_id=${ARM_CLIENT_ID}" -var="client_secret=${ARM_CLIENT_SECRET}" -var="tenant_id=${ARM_TENANT_ID}" -auto-approve
+          name: Apply Kubernetes Deployment
+          command: kubectl apply -f ./service.yaml
 
 workflows:
   version: 2
   deploy_workflow:
     jobs:
-      - deploy_infrastructure
+      - deploy_k8s:
+          filters:
+            branches:
+              only: k8_deploy
