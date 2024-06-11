@@ -26,6 +26,7 @@ jobs:
           name: Apply Kubernetes Deployment
           command: |
             cd kubernetes
+            ls -la
             kubectl apply -f ./deployment.yaml
       - run:
           name: Apply Kubernetes service
