@@ -1,5 +1,5 @@
 version: 2.1
-#orbs define
+# Orbs define
 orbs:
   azure-cli: circleci/azure-cli@1.2.2
   terraform: circleci/terraform@3.1
@@ -13,8 +13,17 @@ jobs:
       - azure-cli/install
       - terraform/install
       - run:
+          name: List files for debugging
+          command: ls -la
+      - run:
           name: Azure CLI Login
           command: az login --service-principal -u $ARM_CLIENT_ID -p $ARM_CLIENT_SECRET --tenant $ARM_TENANT_ID
+      - run:
+          name: Change to Terraform Directory
+          command: cd terraform
+      - run:
+          name: List files in Terraform Directory
+          command: ls -la
       - run:
           name: Terraform Init
           command: terraform init
