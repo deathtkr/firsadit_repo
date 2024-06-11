@@ -18,7 +18,7 @@ spec:
 
       containers:
       - name: swiggy-app
-        image: aditya973/helloworldapp:aditest #gauris17/netflix:latest       
+        image: aditya973/helloworldapp #gauris17/netflix:latest       
         imagePullPolicy: "Always"
         ports:
         - containerPort: 3000
