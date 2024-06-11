@@ -4,3 +4,7 @@ cluster_name        = "Adi-cluster"
 kubernetes_version  = "1.28.5"
 system_node_count   = 2
 user_node           = 1
+subscription_id = "${var.subscription_id}"
+client_id       = "${var.client_id}"
+client_secret   = "${var.client_secret}"
+tenant_id       = "${var.tenant_id}"
