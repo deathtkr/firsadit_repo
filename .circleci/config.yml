@@ -26,12 +26,12 @@ jobs:
           name: Apply Kubernetes Deployment
           command: |
             cd kubernetes
-            kubectl apply -f kubernetes/deployment.yaml
+            kubectl apply -f deployment.yaml
       - run:
-          name: Apply Kubernetes Deployment
+          name: Apply Kubernetes service
           command: |
             cd kubernetes
-            kubectl apply -f kubernetes/service.yaml
+            kubectl apply -f service.yaml
 
 workflows:
   version: 2
