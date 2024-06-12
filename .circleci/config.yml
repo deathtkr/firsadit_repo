@@ -10,11 +10,8 @@ jobs:
       - image: cimg/openjdk:17.0.11-browsers
     steps:
       - checkout
-      - azure-cli/install
       - terraform/install
-      - run:
-          name: Azure CLI Login
-          command: az login --service-principal -u $ARM_CLIENT_ID -p $ARM_CLIENT_SECRET --tenant $ARM_TENANT_ID
+
       - run:
           name: Terraform Init
           command: |
