@@ -1,9 +1,9 @@
 apiVersion: v1
 kind: Service
 metadata:
-  name: swiggy-app
+  name: adi-test
   labels:
-    app: swiggy-app
+    app: adi-test
 spec:
   type: LoadBalancer
   loadBalancerIP: 48.217.193.70  # Specify the desired public IP address
@@ -11,4 +11,4 @@ spec:
     - port: 80
       targetPort: 8080
   selector:
-    app: swiggy-app
+    app: adi-test
