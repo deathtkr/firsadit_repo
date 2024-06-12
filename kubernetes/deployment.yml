@@ -1,23 +1,23 @@
 apiVersion: apps/v1
 kind: Deployment
 metadata:
-  name: swiggy-app
+  name: Adi-test
   labels:
-    app: swiggy-app
+    app: adi-test
 spec:
   replicas: 2
   selector:
     matchLabels:
-      app: swiggy-app
+      app: adi-test
   template:
     metadata:
       labels:
-        app: swiggy-app
+        app: adi-test
     spec:
       terminationGracePeriodSeconds: 30
 
       containers:
-      - name: swiggy-app
+      - name: adi-test
         image: aditya973/helloworldapp:aditest #gauris17/netflix:latest       
         imagePullPolicy: "Always"
         ports:
