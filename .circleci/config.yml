@@ -23,15 +23,21 @@ jobs:
             cd terraform
             terraform plan -var="subscription_id=${ARM_SUBSCRIPTION_ID}" -var="client_id=${ARM_CLIENT_ID}" -var="client_secret=${ARM_CLIENT_SECRET}" -var="tenant_id=${ARM_TENANT_ID}"
       - run:
-          name: Terraform Apply
+          name: Conditional Terraform Apply
+          when: $RUN_TERRAFORM_APPLY == 'true'
           command: |
             cd terraform
-            terraform apply -var="subscription_id=${ARM_SUBSCRIPTION_ID}" -var="client_id=${ARM_CLIENT_ID}" -var="client_secret=${ARM_CLIENT_SECRET}" -var="tenant_id=${ARM_TENANT_ID}" -auto-approve
+            terraform apply \
+              -var="subscription_id=${ARM_SUBSCRIPTION_ID}" \
+              -var="client_id=${ARM_CLIENT_ID}" \
+              -var="client_secret=${ARM_CLIENT_SECRET}" \
+              -var="tenant_id=${ARM_TENANT_ID}" \
+              -auto-approve
 
       - run:
           name: Trigger k8_deploy Pipeline
           command: |
-            curl -X POST "https://app.circleci.com/pipelines/circleci/PtnWTxfNAkdUUWUZKHJ94r/VrhfjUTrgqpHRWLAA3us35/172/workflows/38fd1ac7-646c-43f3-904e-0c328b8e52cd" \
+            curl --location --request POST 'https://circleci.com/api/v2/project/deathtkr/firsadit_repo/demo1/docker/pipeline" \
             -H "Circle-Token: ${CIRCLECI_API_TOKEN}" \
             -H "Content-Type: application/json" \
             -d '{
@@ -43,4 +49,6 @@ workflows:
   version: 2
   deploy_workflow:
     jobs:
-      - deploy_infrastructure
+      - deploy_infrastructure:
+          environment:
+            RUN_TERRAFORM_APPLY: false
