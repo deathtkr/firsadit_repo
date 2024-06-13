@@ -8,6 +8,8 @@ jobs:
   deploy_infrastructure:
     docker:
       - image: cimg/openjdk:17.0.11-browsers
+    environment:
+      RUN_TERRAFORM_APPLY: false
     steps:
       - checkout
       - terraform/install
@@ -50,5 +52,3 @@ workflows:
   deploy_workflow:
     jobs:
       - deploy_infrastructure:
-          environment:
-            RUN_TERRAFORM_APPLY: false
