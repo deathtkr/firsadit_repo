@@ -51,4 +51,4 @@ workflows:
   version: 2
   deploy_workflow:
     jobs:
-      - deploy_infrastructure:
+      - deploy_infrastructure
