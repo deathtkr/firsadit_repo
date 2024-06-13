@@ -8,8 +8,6 @@ jobs:
   deploy_infrastructure:
     docker:
       - image: cimg/openjdk:17.0.11-browsers
-    environment:
-      RUN_TERRAFORM_APPLY: false
     steps:
       - checkout
       - terraform/install
@@ -25,8 +23,6 @@ jobs:
             cd terraform
             terraform plan -var="subscription_id=${ARM_SUBSCRIPTION_ID}" -var="client_id=${ARM_CLIENT_ID}" -var="client_secret=${ARM_CLIENT_SECRET}" -var="tenant_id=${ARM_TENANT_ID}"
       - run:
-          name: Conditional Terraform Apply
-          when: $RUN_TERRAFORM_APPLY == 'true'
           command: |
             cd terraform
             terraform apply \
