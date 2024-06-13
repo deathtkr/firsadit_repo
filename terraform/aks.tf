@@ -42,7 +42,10 @@ resource "azurerm_kubernetes_cluster" "aks" {
 }
 
 
-
+data "azurerm_kubernetes_cluster" "example" {
+  name                = var.cluster_name
+  resource_group_name = azurerm_resource_group.aks-rg.name
+}
 
 
   resource "azurerm_kubernetes_cluster_node_pool" "example" {
