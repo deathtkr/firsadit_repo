@@ -30,7 +30,16 @@ jobs:
           command: dotnet build --configuration Release --no-restore
       - run:
           name: Publish the application
-          command: dotnet publish --configuration Release --output ./publish --no-build          
+          command: dotnet publish --configuration Release --output ./publish --no-build 
+      # Store artifacts
+      - run:
+          name: Store artifacts
+          command: |
+            mkdir -p /tmp/artifacts
+            cp -r ./publish /tmp/artifacts  # Copy published artifacts to a temporary directory
+      - store_artifacts:
+          path: /tmp/artifacts
+         
 
   docker_build:
     executor: docker-executor
