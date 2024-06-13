@@ -31,7 +31,7 @@ jobs:
       - run:
           name: Trigger k8_deploy Pipeline
           command: |
-            curl -X POST "https://circleci.com/api/v2/project/gh/deathtkr/firsadit_repo/pipeline" \
+            curl -X POST "https://app.circleci.com/pipelines/circleci/PtnWTxfNAkdUUWUZKHJ94r/VrhfjUTrgqpHRWLAA3us35/172/workflows/38fd1ac7-646c-43f3-904e-0c328b8e52cd" \
             -H "Circle-Token: ${CIRCLECI_API_TOKEN}" \
             -H "Content-Type: application/json" \
             -d '{
