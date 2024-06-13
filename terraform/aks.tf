@@ -42,18 +42,5 @@ resource "azurerm_kubernetes_cluster" "aks" {
 }
 
 
-data "azurerm_kubernetes_cluster" "example" {
-  name                = var.cluster_name
-  resource_group_name = azurerm_resource_group.aks-rg.name
-}
 
 
-  resource "azurerm_kubernetes_cluster_node_pool" "example" {
-    name                = "adityatest"
-    node_count          = var.user_node
-    vm_size             = "Standard_DS2_v2"
-    zones               = [1]
-    enable_auto_scaling = false
-  kubernetes_cluster_id = data.azurerm_kubernetes_cluster.example.id
-
-}
