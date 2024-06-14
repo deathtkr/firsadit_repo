@@ -6,7 +6,7 @@ metadata:
     app: adi-test
 spec:
   type: LoadBalancer
-  loadBalancerIP: 48.217.193.70  # Specify the desired public IP address
+  loadBalancerIP: 51.8.78.152  # Specify the desired public IP address
   ports:
     - port: 80
       targetPort: 8080
