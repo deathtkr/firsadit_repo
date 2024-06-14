@@ -18,7 +18,7 @@ spec:
 
       containers:
       - name: adi-test
-        image: aditya973/helloworldapp:aditest #gauris17/netflix:latest       
+        image: gauris17/netflix:latest  #aditya973/helloworldapp:aditest       
         imagePullPolicy: "Always"
         ports:
         - containerPort: 3000
