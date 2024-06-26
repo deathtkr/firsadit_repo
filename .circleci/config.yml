@@ -124,6 +124,7 @@ jobs:
           name: Apply Kubernetes Deployment
           command: |
             cd kubernetes
+            ls -la
             kubectl apply -f deployment.yml
       - run:
           name: Apply Kubernetes Service
@@ -133,7 +134,7 @@ jobs:
 
 workflows:
   version: 2
-  build_and_push:
+  build_and_deploy:
     jobs:
       - build
       - sonarcloud_scan:
@@ -142,13 +143,12 @@ workflows:
       - docker_build:
           requires:
             - sonarcloud_scan
-
-  deploy_workflow:
-    jobs:
-      - deploy_infrastructure
+      - deploy_infrastructure:
+          requires:
+            - docker_build
       - deploy_k8s:
+          requires:
+            - deploy_infrastructure
           filters:
             branches:
               only: k8_deploy
-          requires:
-            - deploy_infrastructure
