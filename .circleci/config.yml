@@ -1,7 +1,11 @@
 version: 2.1
 
+# Orbs define
 orbs:
   sonarcloud: sonarsource/sonarcloud@2.0.0
+  azure-cli: circleci/azure-cli@1.2.2
+  terraform: circleci/terraform@3.1
+  kubernetes: circleci/kubernetes@0.11.0
 
 executors:
   dotnet-executor:
@@ -39,7 +43,6 @@ jobs:
             cp -r ./publish /tmp/artifacts  # Copy published artifacts to a temporary directory
       - store_artifacts:
           path: /tmp/artifacts
-         
 
   docker_build:
     executor: docker-executor
@@ -76,14 +79,76 @@ jobs:
               -Dsonar.host.url=https://sonarcloud.io \
               -Dsonar.login=$Sonar_Token
 
+  deploy_infrastructure:
+    docker:
+      - image: cimg/openjdk:17.0.11-browsers
+    steps:
+      - checkout
+      - terraform/install
+      - run:
+          name: Terraform Init
+          command: |
+            cd terraform
+            terraform init
+      - run:
+          name: Terraform Plan
+          command: |
+            cd terraform
+            terraform plan -var="subscription_id=${ARM_SUBSCRIPTION_ID}" -var="client_id=${ARM_CLIENT_ID}" -var="client_secret=${ARM_CLIENT_SECRET}" -var="tenant_id=${ARM_TENANT_ID}"
+      - run:
+          name: Terraform Apply
+          command: |
+            cd terraform
+            terraform apply \
+              -var="subscription_id=${ARM_SUBSCRIPTION_ID}" \
+              -var="client_id=${ARM_CLIENT_ID}" \
+              -var="client_secret=${ARM_CLIENT_SECRET}" \
+              -var="tenant_id=${ARM_TENANT_ID}" \
+              -auto-approve
+
+  deploy_k8s:
+    docker:
+      - image: cimg/openjdk:17.0.11-browsers
+    steps:
+      - checkout
+      - azure-cli/install
+      - run:
+          name: Azure CLI Login
+          command: az login --service-principal -u $ARM_CLIENT_ID -p $ARM_CLIENT_SECRET --tenant $ARM_TENANT_ID
+      - run:
+          name: Get AKS Credentials
+          command: |
+            az aks get-credentials --resource-group $RESOURCE_GROUP_NAME --name $CLUSTER_NAME
+      - kubernetes/install-kubectl
+      - run:
+          name: Apply Kubernetes Deployment
+          command: |
+            cd kubernetes
+            kubectl apply -f deployment.yml
+      - run:
+          name: Apply Kubernetes Service
+          command: |
+            cd kubernetes
+            kubectl apply -f service.yml
+
 workflows:
   version: 2
   build_and_push:
     jobs:
       - build
-      - docker_build:
-          requires:
-            - sonarcloud_scan
       - sonarcloud_scan:
           requires:
             - build
+      - docker_build:
+          requires:
+            - sonarcloud_scan
+
+  deploy_workflow:
+    jobs:
+      - deploy_infrastructure
+      - deploy_k8s:
+          filters:
+            branches:
+              only: k8_deploy
+          requires:
+            - deploy_infrastructure
