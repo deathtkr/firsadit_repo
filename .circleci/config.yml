@@ -149,6 +149,4 @@ workflows:
       - deploy_k8s:
           requires:
             - deploy_infrastructure
-          filters:
-            branches:
-              only: k8_deploy
+
