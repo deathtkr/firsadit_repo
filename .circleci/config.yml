@@ -1,7 +1,7 @@
 version: 2.1
 
-# Orbs define
 orbs:
+  snyk: snyk/snyk@0.13.0
   sonarcloud: sonarsource/sonarcloud@2.0.0
   azure-cli: circleci/azure-cli@1.2.2
   terraform: circleci/terraform@3.1
@@ -35,7 +35,6 @@ jobs:
       - run:
           name: Publish the application
           command: dotnet publish --configuration Release --output ./publish --no-build 
-      # Store artifacts
       - run:
           name: Store artifacts
           command: |
@@ -78,6 +77,16 @@ jobs:
               -Dsonar.organization=$organization \
               -Dsonar.host.url=https://sonarcloud.io \
               -Dsonar.login=$Sonar_Token
+
+  snyk_scan:
+    docker:
+      - image: cimg/base:stable
+    steps:
+      - checkout
+      - snyk/scan:
+          command: test
+          organization: $SNYK_ORG
+          project_name: $SNYK_PROJECT_NAME
 
   deploy_infrastructure:
     docker:
@@ -140,13 +149,16 @@ workflows:
       - sonarcloud_scan:
           requires:
             - build
+      - snyk_scan:
+          requires:
+            - build
       - docker_build:
           requires:
             - sonarcloud_scan
+            - snyk_scan
       - deploy_infrastructure:
           requires:
             - docker_build
       - deploy_k8s:
           requires:
             - deploy_infrastructure
-
