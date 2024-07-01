@@ -84,10 +84,14 @@ jobs:
     steps:
       - checkout
       - run:
-          name: Set Snyk Token
-          command: echo $SNYK_TOKEN | snyk auth $SNYK_TOKEN
-      - snyk/scan:
-          args: --org=$SNYK_ORG --project-name=$SNYK_PROJECT_NAME
+          name: Authenticate with Snyk
+          command: snyk auth $SNYK_TOKEN
+      - run:
+          name: Run Snyk Test
+          command: snyk test --org=$SNYK_ORG --project-name=$SNYK_PROJECT_NAME
+      - run:
+          name: Monitor Snyk Project
+          command: snyk monitor --org=$SNYK_ORG --project-name=$SNYK_PROJECT_NAME
 
   deploy_infrastructure:
     docker:
