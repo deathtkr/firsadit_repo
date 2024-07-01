@@ -85,7 +85,7 @@ jobs:
       - checkout
       - run:
           name: Install Snyk CLI
-          command: npm install -g snyk
+          command: snyk/install
       - run:
           name: Authenticate with Snyk
           command: snyk auth $SNYK_TOKEN
