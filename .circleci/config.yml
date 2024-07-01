@@ -83,8 +83,9 @@ jobs:
       - image: cimg/node:lts
     steps:
       - checkout
-      - run: npm ci
-      - snyk/install
+      - run:
+          name: Install Snyk CLI
+          command: npm install -g snyk
       - run:
           name: Authenticate with Snyk
           command: snyk auth $SNYK_TOKEN
