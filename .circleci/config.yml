@@ -1,7 +1,7 @@
 version: 2.1
 
 orbs:
-  snyk: snyk/snyk@2.1.0
+  snyk: snyk/snyk@0.13.0
   sonarcloud: sonarsource/sonarcloud@2.0.0
   azure-cli: circleci/azure-cli@1.2.2
   terraform: circleci/terraform@3.1
@@ -83,7 +83,11 @@ jobs:
       - image: cimg/base:stable
     steps:
       - checkout
-      - snyk/scan
+      - run:
+          name: Set Snyk Token
+          command: echo $SNYK_TOKEN | snyk auth $SNYK_TOKEN
+      - snyk/scan:
+          args: --org=$SNYK_ORG --project-name=$SNYK_PROJECT_NAME
 
   deploy_infrastructure:
     docker:
