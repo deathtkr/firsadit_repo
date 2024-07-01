@@ -50,12 +50,12 @@ jobs:
       - run:
           name: Build Docker image
           command: |
-            docker build -f hello-world-api/Dockerfile -t $DOCKERHUB_USERNAME/helloworldapp:adi2 hello-world-api
+            docker build -f hello-world-api/Dockerfile -t $DOCKERHUB_USERNAME/helloworldapp:adi3 hello-world-api
       - run:
           name: Push Docker image
           command: |
             echo $DOCKERHUB_PASSWORD | docker login -u $DOCKERHUB_USERNAME --password-stdin
-            docker push $DOCKERHUB_USERNAME/helloworldapp:adi2
+            docker push $DOCKERHUB_USERNAME/helloworldapp:adi3
 
   sonarcloud_scan:
     executor: sonar-executor
