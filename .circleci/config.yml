@@ -83,10 +83,11 @@ jobs:
       - image: cimg/base:stable
     steps:
       - checkout
-      - snyk/scan:
+      - run: npm ci
+      - snyk/install:
           command: test
-          organization: $SNYK_ORG
-          project_name: $SNYK_PROJECT_NAME
+          organization: deathtkr
+          project_name: hello-world-api/Dockerfile
 
   deploy_infrastructure:
     docker:
