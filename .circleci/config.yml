@@ -80,7 +80,7 @@ jobs:
 
   snyk_scan:
     docker:
-      - image: cimg/base:stable
+      - image: cimg/node:lts
     steps:
       - checkout
       - run: npm ci
