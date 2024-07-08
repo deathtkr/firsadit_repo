@@ -81,9 +81,7 @@ workflows:
   build_and_push:
     jobs:
       - build
-      - docker_build:
-          requires:
-            - sonarcloud_scan
+      - docker_build
       - sonarcloud_scan:
           requires:
             - build
