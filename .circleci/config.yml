@@ -22,23 +22,16 @@ jobs:
       - run:
           name: Clear nuget
           command: dotnet nuget locals all --clear
-      - restore_cache:
-          keys:
-            - v1-nuget-cache-{{ checksum "nuget.config" }}
-            - v1-nuget-cache-
       - run:
           name: Restore dependencies
           command: dotnet restore
-      - save_cache:
-          paths:
-            - ~/.nuget/packages
-          key: v1-nuget-cache-{{ checksum "nuget.config" }}
       - run:
           name: Build the application
           command: dotnet build --configuration Release --no-restore
       - run:
           name: Publish the application
           command: dotnet publish --configuration Release --output ./publish --no-build 
+      # Store artifacts
       - run:
           name: Store artifacts
           command: |
@@ -46,6 +39,7 @@ jobs:
             cp -r ./publish /tmp/artifacts  # Copy published artifacts to a temporary directory
       - store_artifacts:
           path: /tmp/artifacts
+         
 
   docker_build:
     executor: docker-executor
