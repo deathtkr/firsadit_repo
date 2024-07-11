@@ -16,15 +16,10 @@ jobs:
     executor: dotnet-executor
     steps:
       - checkout
-      - run:
-          name: Debug - List project.lock.json
-          command: |
-            # List files in potential locations
-            ls
       
       - restore_cache:
           keys:
-            - v1-dotnet-{{ .Branch }}-{{ checksum "appsettings.Development.json" }}
+            - v1-dotnet-{{ .Branch }}-{{ checksum "project.lock.json" }}
             - v1-dotnet-{{ .Branch }}-
           paths:
             - /root/.nuget/packages  # Adjust if necessary based on where .NET SDK caches packages
@@ -55,7 +50,7 @@ jobs:
           paths:
             - /root/.nuget/packages
             - /root/project
-          key: v1-dotnet-{{ .Branch }}-{{ checksum "appsettings.Development.json" }}
+          key: v1-dotnet-{{ .Branch }}-{{ checksum "project.lock.json" }}
 
   docker_build:
     executor: docker-executor
