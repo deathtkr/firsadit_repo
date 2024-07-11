@@ -28,8 +28,9 @@ jobs:
           command: dotnet nuget locals all --clear
       - run:
           name: Restore dependencies
-          command: dotnet restore
-          command: ll
+          command: | 
+            dotnet restore
+            ll
       - run:
           name: Build the application
           command: dotnet build --configuration Release --no-restore
