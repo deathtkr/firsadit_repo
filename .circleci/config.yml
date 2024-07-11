@@ -1,8 +1,5 @@
 version: 2.1
 
-orbs:
-  sonarcloud: sonarsource/sonarcloud@2.0.0
-
 executors:
   dotnet-executor:
     docker:
@@ -19,6 +16,10 @@ jobs:
     executor: dotnet-executor
     steps:
       - checkout
+      - restore_cache:
+          keys:
+            - v1-dotnet-{{ .Branch }}-{{ checksum "project.lock.json" }}
+            - v1-dotnet-{{ .Branch }}-
       - run:
           name: Clear nuget
           command: dotnet nuget locals all --clear
@@ -39,7 +40,11 @@ jobs:
             cp -r ./publish /tmp/artifacts  # Copy published artifacts to a temporary directory
       - store_artifacts:
           path: /tmp/artifacts
-         
+
+      - save_cache:
+          paths:
+            - ~/.nuget/packages
+          key: v1-dotnet-{{ .Branch }}-{{ checksum "project.lock.json" }}
 
   docker_build:
     executor: docker-executor
@@ -56,6 +61,11 @@ jobs:
           command: |
             echo $DOCKERHUB_PASSWORD | docker login -u $DOCKERHUB_USERNAME --password-stdin
             docker push $DOCKERHUB_USERNAME/helloworldapp:adi3
+
+      - save_cache:
+          key: v1-docker-{{ .Branch }}
+          paths:
+            - /var/lib/docker
 
   sonarcloud_scan:
     executor: sonar-executor
