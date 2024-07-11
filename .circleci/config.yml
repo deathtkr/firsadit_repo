@@ -20,10 +20,8 @@ jobs:
           name: Debug - List project.lock.json
           command: |
             # List files in potential locations
-            ls -l /root/.nuget/packages/**/project.lock.json
-            ls -l /root/project/**/*.csproj  # Replace with actual path if needed
-            # Alternatively, search for all project.lock.json files
-            find /root -name project.lock.json        
+            ls
+      
       - restore_cache:
           keys:
             - v1-dotnet-{{ .Branch }}-{{ checksum "appsettings.Development.json" }}
