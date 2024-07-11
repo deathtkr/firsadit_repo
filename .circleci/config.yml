@@ -19,7 +19,7 @@ jobs:
       
       - restore_cache:
           keys:
-            - v1-dotnet-{{ .Branch }}-{{ checksum "project.lock.json" }}
+            - v1-dotnet-{{ .Branch }}-{{ checksum "dotnet-hello-world.sln" }}
             - v1-dotnet-{{ .Branch }}-
           paths:
             - /root/.nuget/packages  # Adjust if necessary based on where .NET SDK caches packages
@@ -50,7 +50,7 @@ jobs:
           paths:
             - /root/.nuget/packages
             - /root/project
-          key: v1-dotnet-{{ .Branch }}-{{ checksum "project.lock.json" }}
+          key: v1-dotnet-{{ .Branch }}-{{ checksum "dotnet-hello-world.sln" }}
 
   docker_build:
     executor: docker-executor
