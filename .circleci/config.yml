@@ -16,6 +16,14 @@ jobs:
     executor: dotnet-executor
     steps:
       - checkout
+      - run:
+          name: Debug - List project.lock.json
+          command: |
+            # List files in potential locations
+            ls -l /root/.nuget/packages/**/project.lock.json
+            ls -l /root/project/**/*.csproj  # Replace with actual path if needed
+            # Alternatively, search for all project.lock.json files
+            find /root -name project.lock.json        
       - restore_cache:
           keys:
             - v1-dotnet-{{ .Branch }}-{{ checksum "appsettings.Development.json" }}
@@ -28,9 +36,8 @@ jobs:
           command: dotnet nuget locals all --clear
       - run:
           name: Restore dependencies
-          command: | 
-            dotnet restore
-            ll
+          command: dotnet restore
+          
       - run:
           name: Build the application
           command: dotnet build --configuration Release --no-restore
