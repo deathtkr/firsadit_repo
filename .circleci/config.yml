@@ -20,6 +20,9 @@ jobs:
           keys:
             - v1-dotnet-{{ .Branch }}-{{ checksum "project.lock.json" }}
             - v1-dotnet-{{ .Branch }}-
+          paths:
+            - /root/.nuget/packages  # Adjust if necessary based on where .NET SDK caches packages
+            - /root/project           # Adjust if necessary based on where your project resides
       - run:
           name: Clear nuget
           command: dotnet nuget locals all --clear
@@ -43,7 +46,8 @@ jobs:
 
       - save_cache:
           paths:
-            - ~/.nuget/packages
+            - /root/.nuget/packages
+            - /root/project
           key: v1-dotnet-{{ .Branch }}-{{ checksum "project.lock.json" }}
 
   docker_build:
