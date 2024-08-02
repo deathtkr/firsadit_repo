@@ -12,3 +12,14 @@ variable "aws_region" {
   description = "aws region"
 }
 
+variable "AWS_access" {
+  description = "The AWS access key"
+  type        = string
+  sensitive   = true
+}
+
+variable "AWS_secret" {
+  description = "The AWS secret key"
+  type        = string
+  sensitive   = true
+}
