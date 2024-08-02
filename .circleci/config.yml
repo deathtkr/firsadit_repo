@@ -24,7 +24,9 @@ jobs:
           command: |
             cd terraform
             terraform init
-            terraform plan
+            terraform plan -auto-approve \
+              -var="AWS_access=${AWS_access}" \
+              -var="AWS_secret=${AWS_secret}"
       - run:
           name: Apply Terraform Configuration
           command: terraform apply -auto-approve
