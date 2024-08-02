@@ -1,5 +1,5 @@
 provider "aws" {
-   aws_region     = var.aws_region 
-  AWS_access = var.AWS_access
-  AWS_secret = var.AWS_secret
+  aws_region     = var.aws_region 
+  access_key = var.AWS_access
+  secret_key = var.AWS_secret
 }
