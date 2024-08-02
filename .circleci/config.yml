@@ -1,9 +1,6 @@
 version: 2.1
 
 executors:
-  dotnet-executor:
-    docker:
-      - image: mcr.microsoft.com/dotnet/sdk:6.0
   docker-executor:
     docker:
       - image: cimg/base:stable
@@ -12,46 +9,6 @@ executors:
       - image: cimg/openjdk:17.0.11-browsers  
 
 jobs:
-  build:
-    executor: dotnet-executor
-    steps:
-      - checkout
-      
-      - restore_cache:
-          keys:
-            - v1-dotnet-{{ .Branch }}-{{ checksum "dotnet-hello-world.sln" }}
-            - v1-dotnet-{{ .Branch }}-
-          paths:
-            - /root/.nuget/packages  # Adjust if necessary based on where .NET SDK caches packages
-            - /root/firsadit_repo/hello-world-api           # Adjust if necessary based on where your project resides
-      - run:
-          name: Clear nuget
-          command: dotnet nuget locals all --clear
-      - run:
-          name: Restore dependencies
-          command: dotnet restore
-          
-      - run:
-          name: Build the application
-          command: dotnet build --configuration Release --no-restore
-      - run:
-          name: Publish the application
-          command: dotnet publish --configuration Release --output ./publish --no-build 
-      # Store artifacts
-      - run:
-          name: Store artifacts
-          command: |
-            mkdir -p /tmp/artifacts
-            cp -r ./publish /tmp/artifacts  # Copy published artifacts to a temporary directory
-      - store_artifacts:
-          path: /tmp/artifacts
-
-      - save_cache:
-          paths:
-            - /root/.nuget/packages
-            - /root/project
-          key: v1-dotnet-{{ .Branch }}-{{ checksum "dotnet-hello-world.sln" }}
-
   docker_build:
     executor: docker-executor
     steps:
@@ -61,12 +18,12 @@ jobs:
       - run:
           name: Build Docker image
           command: |
-            docker build -f hello-world-api/Dockerfile -t $DOCKERHUB_USERNAME/helloworldapp:adi3 hello-world-api
+            docker build -f simple-python-website-main/Dockerfile -t $DOCKERHUB_USERNAME/pythonweb:adi3 simple-python-website-main
       - run:
           name: Push Docker image
           command: |
             echo $DOCKERHUB_PASSWORD | docker login -u $DOCKERHUB_USERNAME --password-stdin
-            docker push $DOCKERHUB_USERNAME/helloworldapp:adi3
+            docker push $DOCKERHUB_USERNAME/pythonweb:adi3
 
       - save_cache:
           key: v1-docker-{{ .Branch }}
@@ -96,8 +53,7 @@ workflows:
   version: 2
   build_and_push:
     jobs:
-      - build
       - docker_build
       - sonarcloud_scan:
           requires:
-            - build
+            - docker_build
