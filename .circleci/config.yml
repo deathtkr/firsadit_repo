@@ -21,7 +21,9 @@ jobs:
       - checkout
       - run:
           name: Change to Terraform Directory
-          command: cd terraform
+          command: |
+            cd terraform
+            ls
       - run:
           name: Setup Terraform
           command: |
