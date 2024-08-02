@@ -20,14 +20,9 @@ jobs:
     steps:
       - checkout
       - run:
-          name: Change to Terraform Directory
-          command: |
-            cd terraform
-            ls
-      - run:
           name: Setup Terraform
           command: |
-            ls
+            cd terraform
             terraform init
             terraform validate
       - run:
