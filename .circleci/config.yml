@@ -24,7 +24,7 @@ jobs:
           command: |
             cd terraform
             terraform init
-            terraform validate
+            terraform plan
       - run:
           name: Apply Terraform Configuration
           command: terraform apply -auto-approve
