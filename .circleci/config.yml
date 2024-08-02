@@ -20,14 +20,16 @@ jobs:
     steps:
       - checkout
       - run:
+          name: Change to Terraform Directory
+          command: cd terraform
+      - run:
           name: Setup Terraform
           command: |
             terraform init
             terraform validate
       - run:
           name: Apply Terraform Configuration
-          command: |
-            terraform apply -auto-approve
+          command: terraform apply -auto-approve
 
   kubectl_deploy:
     executor: kubectl-executor
@@ -97,9 +99,3 @@ workflows:
       - kubectl_deploy:
           requires:
             - terraform_apply
-
-  run_only:
-    jobs:
- #     - docker_build
-      - terraform_apply
- #     - kubectl_deploy
