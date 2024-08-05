@@ -6,7 +6,7 @@ executors:
       - image: cimg/base:stable
   terraform-executor:
     docker:
-      - image: hashicorp/terraform:1.5.0
+      - image: cimg/aws #hashicorp/terraform:1.5.0
   kubectl-executor:
     docker:
       - image: bitnami/kubectl:latest
