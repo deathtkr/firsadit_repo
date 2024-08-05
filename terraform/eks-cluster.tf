@@ -1,3 +1,14 @@
+terraform {
+  backend "s3" {
+    bucket         = "backendtf001"
+    key            = "terraform/state.tfstate"
+    region         = "ap-south-1"
+    dynamodb_table = "terraform-state"
+    encrypt        = true
+  }
+}
+
+
 module "eks" {
   source          = "terraform-aws-modules/eks/aws"
   version         = "20.8.4"
