@@ -5,8 +5,7 @@ terraform {
     region         = "ap-south-1"
     dynamodb_table = "terraform-state"
     encrypt        = true
-    access_key = var.AWS_access
-    secret_key = var.AWS_secret
+    kms_key_id = arn:aws:kms:us-west-1:891377112510:key/1e5b2208-0faa-442f-ae5a-e861ccc4dad5
   }
 }
 
