@@ -5,6 +5,8 @@ terraform {
     region         = "ap-south-1"
     dynamodb_table = "terraform-state"
     encrypt        = true
+    access_key = var.AWS_access
+    secret_key = var.AWS_secret
   }
 }
 
