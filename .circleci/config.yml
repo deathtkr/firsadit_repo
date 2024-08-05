@@ -6,7 +6,7 @@ executors:
       - image: cimg/base:stable
   terraform-executor:
     docker:
-      - image: cimg/aws:2024.03.1 #hashicorp/terraform:1.5.0
+      - image: hashicorp/terraform:1.5.0
   kubectl-executor:
     docker:
       - image: bitnami/kubectl:latest
@@ -19,12 +19,6 @@ jobs:
     executor: terraform-executor
     steps:
       - checkout
-      - run:
-          name: Set up AWS CLI
-          command: |
-            aws configure set aws_access_key_id ${AWS_access}
-            aws configure set aws_secret_access_key ${AWS_secret}
-            aws configure set region $aws_region
       - run:
           name: Setup Terraform
           command: |
