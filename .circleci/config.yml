@@ -20,6 +20,12 @@ jobs:
     steps:
       - checkout
       - run:
+          name: Set up AWS CLI
+          command: |
+            aws configure set aws_access_key_id ${AWS_access}
+            aws configure set aws_secret_access_key ${AWS_secret}
+            aws configure set region $aws_region
+      - run:
           name: Setup Terraform
           command: |
             cd terraform
