@@ -51,6 +51,7 @@ jobs:
       - run:
           name: Setup kubectl
           command: |
+            ls
             cd Kubernetes
             aws eks update-kubeconfig --region $AWS_REGION --name $EKS_CLUSTER_NAME 
       - run:
