@@ -29,7 +29,7 @@ jobs:
       - run:
           name: Apply Terraform Configuration
           command: |
-           terraform
+           cd terraform
            terraform apply -auto-approve
 
   kubectl_deploy:
