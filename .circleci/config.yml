@@ -54,7 +54,7 @@ jobs:
           name: Apply Kubernetes Deployment
           command: |
             cd kubernetes
-            kubectl apply -f deployment.yml
+            kubectl create -f deployment.yml
 
   docker_build:
     executor: docker-executor
