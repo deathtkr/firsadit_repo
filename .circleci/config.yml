@@ -12,7 +12,7 @@ executors:
       - image: hashicorp/terraform:1.5.0
   kubectl-executor:
     docker:
-      - image: cimg/base:stable
+      - image: cimg/aws:2024.03
   sonar-executor:
     docker:
       - image: cimg/openjdk:17.0.11-browsers  
