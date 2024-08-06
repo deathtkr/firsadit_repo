@@ -34,12 +34,16 @@ jobs:
           command: |
            cd terraform
            terraform apply -auto-approve
-           terraform output cluster_name
-           terraform output cluster_endpoint
-           echo "export EKS_CLUSTER_NAME=$(terraform output -raw cluster_name)" >> $BASH_ENV
-           echo "export AWS_REGION=$(terraform output -raw region)" >> $BASH_ENV
-           echo "export CLUSTER_ENDPOINT=$(terraform output -raw cluster_endpoint)" >> $BASH_ENV
-           cat $BASH_ENV 
+      - run:
+          name: Output Terraform Variables to a File
+          command: |
+            cd terraform
+            terraform output -json > terraform_outputs.json
+            cat terraform_outputs.json
+      - persist_to_workspace:
+          root: terraform
+          paths:
+            - terraform_outputs.json 
 #      - run:
  #         name: terraform detsory
   #        command: |
@@ -51,15 +55,14 @@ jobs:
     executor: kubectl-executor
     steps:
       - checkout
-      - run:
-          name: Debug Environment Variables
-          command: |
-            source $BASH_ENV
-            echo "AWS_REGION=$AWS_REGION"
-            echo "EKS_CLUSTER_NAME=$EKS_CLUSTER_NAME"
+      - attach_workspace:
+          at: /workspace
       - run:
           name: Setup kubectl
           command: |
+            # Load Terraform outputs
+            export AWS_REGION=$(jq -r '.aws_region.value' /workspace/terraform_outputs.json)
+            export EKS_CLUSTER_NAME=$(jq -r '.cluster_name.value' /workspace/terraform_outputs.json)
             aws eks update-kubeconfig --region $AWS_REGION --name $EKS_CLUSTER_NAME 
       - run:
           name: Apply Kubernetes Deployment
