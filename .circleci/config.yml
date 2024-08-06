@@ -42,6 +42,7 @@ jobs:
           name: terraform detsory
           command: |
             cd terraform
+                        terraform init
             terraform destroy -auto-approve
 
   
