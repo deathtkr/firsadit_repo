@@ -31,15 +31,12 @@ jobs:
           command: |
            cd terraform
            terraform apply -auto-approve
-  terraform_destroy:
-    executor: terraform-executor
-    steps:
-    - checkout
-    - run:
-        name: terraform detsory
-        command: |
-          cd terraform
-          terraform destroy  
+      - run:
+          name: terraform detsory
+          command: |
+            cd terraform
+            terraform destroy
+  
   kubectl_deploy:
     executor: kubectl-executor
     steps:
@@ -104,8 +101,7 @@ workflows:
 
   deploy:
     jobs:
-      #- terraform_apply
       - terraform_destroy
-      #- kubectl_deploy:
-          #requires:
-           # - terraform_apply
+      - kubectl_deploy:
+          requires:
+            - terraform_apply
