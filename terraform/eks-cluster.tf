@@ -5,7 +5,10 @@ terraform {
     region         = "ap-south-1"
     dynamodb_table = "terraform-state"
     encrypt        = true
-    kms_key_id = "arn:aws:kms:us-west-1:891377112510:key/1e5b2208-0faa-442f-ae5a-e861ccc4dad5"
+        assume_role_with_web_identity = {
+      role_arn           = "arn:aws:kms:us-west-1:891377112510:key/1e5b2208-0faa-442f-ae5a-e861ccc4dad5"
+      web_identity_token = "<token value>"
+    }
   }
 }
 
