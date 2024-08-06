@@ -3,6 +3,8 @@ terraform {
     bucket         = "backendtf001"
     key            = "terraform/state.tfstate"
     region         = "us-west-1"
+      access_key = var.AWS_access
+  secret_key = var.AWS_secret
     }
   }
 
