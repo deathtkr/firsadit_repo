@@ -34,16 +34,7 @@ jobs:
           command: |
            cd terraform
            terraform apply -auto-approve
-      - run:
-          name: Output Terraform Variables to a File
-          command: |
-            cd terraform
-            terraform output -json > terraform_outputs.json
-            cat terraform_outputs.json
-      - persist_to_workspace:
-          root: terraform
-          paths:
-            - terraform_outputs.json 
+
 #      - run:
  #         name: terraform detsory
   #        command: |
@@ -55,8 +46,6 @@ jobs:
     executor: kubectl-executor
     steps:
       - checkout
-      - attach_workspace:
-          at: /workspace
       - run:
           name: Setup kubectl
           command: |
