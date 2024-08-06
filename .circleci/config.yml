@@ -101,7 +101,6 @@ workflows:
 
   deploy:
     jobs:
-      - terraform_destroy
       - kubectl_deploy:
           requires:
             - terraform_apply
