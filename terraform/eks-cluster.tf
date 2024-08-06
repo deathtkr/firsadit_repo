@@ -1,10 +1,9 @@
 terraform {
   backend "s3" {
     bucket         = "backendtf001"
-    key            = "terraform/state.tfstate"
+    key            = "key/state.tfstate"
     region         = "us-west-1"
-      access_key = var.AWS_access
-  secret_key = var.AWS_secret
+
     }
   }
 
