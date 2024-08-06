@@ -34,6 +34,7 @@ jobs:
   terraform_destroy:
     executor: terraform-executor
     steps:
+    - checkout
     - run:
         name: terraform detsory
         command: |
