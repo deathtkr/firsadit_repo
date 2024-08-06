@@ -39,7 +39,7 @@ jobs:
            echo "export EKS_CLUSTER_NAME=$(terraform output -raw cluster_name)" >> $BASH_ENV
            echo "export AWS_REGION=$(terraform output -raw region)" >> $BASH_ENV
            echo "export CLUSTER_ENDPOINT=$(terraform output -raw cluster_endpoint)" >> $BASH_ENV
-
+           cat $BASH_ENV 
 #      - run:
  #         name: terraform detsory
   #        command: |
