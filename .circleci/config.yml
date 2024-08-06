@@ -55,6 +55,7 @@ jobs:
           command: |
             cd kubernetes
             kubectl create -f deployment.yml --validate=false
+ #1           
 
   docker_build:
     executor: docker-executor
