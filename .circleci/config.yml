@@ -37,7 +37,7 @@ jobs:
            terraform output cluster_name
            terraform output cluster_endpoint
            echo "export EKS_CLUSTER_NAME=$(terraform output -raw cluster_name)" >> $BASH_ENV
-           echo "export AWS_REGION=$(terraform output -raw aws_region)" >> $BASH_ENV
+           echo "export REGION=$(terraform output -raw aws_region)" >> $BASH_ENV
            echo "export CLUSTER_ENDPOINT=$(terraform output -raw cluster_endpoint)" >> $BASH_ENV
 
 #      - run:
