@@ -54,7 +54,6 @@ jobs:
           name: Apply Kubernetes Deployment
           command: |
             cd kubernetes
-            ls
             kubectl create -f deployment.yml --validate=false
 
   docker_build:
