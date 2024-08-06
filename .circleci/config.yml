@@ -52,6 +52,12 @@ jobs:
     steps:
       - checkout
       - run:
+          name: Debug Environment Variables
+          command: |
+            source $BASH_ENV
+            echo "AWS_REGION=$AWS_REGION"
+            echo "EKS_CLUSTER_NAME=$EKS_CLUSTER_NAME"
+      - run:
           name: Setup kubectl
           command: |
             aws eks update-kubeconfig --region $AWS_REGION --name $EKS_CLUSTER_NAME 
