@@ -49,9 +49,6 @@ jobs:
       - run:
           name: Setup kubectl
           command: |
-            # Load Terraform outputs
-            export AWS_REGION=$(jq -r '.aws_region.value' /workspace/terraform_outputs.json)
-            export EKS_CLUSTER_NAME=$(jq -r '.cluster_name.value' /workspace/terraform_outputs.json)
             aws eks update-kubeconfig --region $AWS_REGION --name $EKS_CLUSTER_NAME 
       - run:
           name: Apply Kubernetes Deployment
