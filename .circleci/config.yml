@@ -31,11 +31,15 @@ jobs:
           command: |
            cd terraform
            terraform apply -auto-approve
-      - run:
-          name: terraform detsory
-          command: |
-            cd terraform
-            terraform destroy -auto-approve
+           terraform output cluster_name
+           terraform output cluster_endpoint
+
+#      - run:
+ #         name: terraform detsory
+  #        command: |
+   #         cd terraform
+    #        terraform destroy -auto-approve
+
   
   kubectl_deploy:
     executor: kubectl-executor
@@ -44,11 +48,13 @@ jobs:
       - run:
           name: Setup kubectl
           command: |
-            aws eks --region <your-region> update-kubeconfig --name <your-cluster-name>
+            cd Kubernetes
+            aws eks update-kubeconfig --region $AWS_REGION --name $EKS_CLUSTER_NAME 
       - run:
           name: Apply Kubernetes Deployment
           command: |
-            kubectl apply -f kubernetes/
+            cd Kubernetes
+            kubectl apply -f deployment.yml
 
   docker_build:
     executor: docker-executor
