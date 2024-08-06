@@ -109,5 +109,10 @@ workflows:
     jobs:
       - terraform_apply
       - kubectl_deploy:
+          context:
+            - EKS_CLUSTER_NAME
           requires:
-            - terraform_apply
+            - terraform_apply      
+ 
+
+           
