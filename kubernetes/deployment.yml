@@ -18,7 +18,7 @@ spec:
 
       containers:
       - name: python-app
-        image: aditya973/simplepythonwebsite:latest #gauris17/netflix:latest       
+        image: gauris17/netflix:latest #aditya973/simplepythonwebsite:latest        
         imagePullPolicy: "Always"
         ports:
         - containerPort: 3000

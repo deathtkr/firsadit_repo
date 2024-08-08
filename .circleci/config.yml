@@ -112,13 +112,13 @@ workflows:
 
   deploy:
     jobs:
-      #- terraform_destroy 
-      - terraform_apply
-      - kubectl_deploy:
-          context:
-            - EKS_CLUSTER_NAME
-          requires:
-            - terraform_apply      
+      - terraform_destroy 
+      #- terraform_apply
+      #- kubectl_deploy:
+       #   context:
+        #    - EKS_CLUSTER_NAME
+         # requires:
+          #  - terraform_apply      
  
 
            
